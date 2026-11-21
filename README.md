@@ -2,7 +2,7 @@
 
 给货代单证员使用。主提单与分提单拆并形成有向无环关系，件数和净毛重逐层守恒。
 
-七个业务模块：舱单采信、包装映射、拆并编组、危险品检查、净毛重核验、报关对账、版本封存。
+八个业务模块：舱单采信、包装映射、拆并编组、危险品检查、净毛重核验、报关对账、计费交接、版本封存。
 
 ```sh
 docker compose up --build -d
@@ -13,7 +13,9 @@ docker compose exec -T app pytest -q
 
 各模块页面对应 `/<模块英文名>`，各模块执行入口为 `POST /api/<模块英文名>`，不传参即可独立演示。完整运行 `POST /api/runs` 支持 `dataset`（dirty/clean/legacy）、`csv_text` 与 `overrides` 参数。批次历史 `GET /api/runs`，详情 `GET /api/runs/{run_id}`。
 
-同输入与规则版本生成相同批号，只保留一条批次。复核入口 `POST /api/runs/{run_id}/review` 提交当前 `revision`，陈旧提交409。归档包只有一个下载入口 `GET /api/export/{run_id}`，含证据和运行摘要。原始隔离在页面同屏显示。
+同输入与规则版本生成相同批号，只保留一条批次。复核入口 `POST /api/runs/{run_id}/review` 提交当前 `revision`，陈旧提交409。归档包只有一个下载入口 `GET /api/export/{run_id}`，含证据和运行摘要（含计费交接凭证与补正台账）。原始隔离在页面同屏显示。
+
+计费交接页 `/billing` 逐张主单出具计费重量交接凭证，写清计费基准、申报/可核验净毛重、毛重差异、计费重量与结算和封存结论；合同基准用 `billing_basis`（verified/declared）裁决。补正到达走 `POST /api/runs/{run_id}/corrections`（body 含 `request_id` 与 `corrections`），重算受影响主单并重出对账与封存结论；同 `request_id` 重试幂等沿用原凭证。凭证切换中断或人工撤回走 `POST /api/runs/{run_id}/billing/rollback` 回滚上一版，原申报记录与核验表不改写、可追溯。逐层核验或申报对账未闭合时对应凭证与批次均不能封存。
 
 SQLite使用命名卷，容器重启后保留历史。要重建演示可在Compose中改用新的卷名称，保留旧卷。
 

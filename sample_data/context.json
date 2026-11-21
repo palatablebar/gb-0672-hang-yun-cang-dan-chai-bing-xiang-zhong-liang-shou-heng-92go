@@ -6,8 +6,10 @@
     "hazard",
     "weight",
     "reconcile",
+    "billing",
     "archive"
   ],
+  "billing_basis": "verified",
   "packages": {
     "carton": "1",
     "pallet": "10",

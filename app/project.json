@@ -10,6 +10,7 @@
     "危险品检查",
     "净毛重核验",
     "报关对账",
+    "计费交接",
     "版本封存"
   ],
   "rule": "主提单与分提单拆并形成有向无环关系，件数和净毛重逐层守恒",
@@ -29,6 +30,7 @@
     "hazard",
     "weight",
     "reconcile",
+    "billing",
     "archive"
   ],
   "labels": {
@@ -63,6 +65,33 @@
     "graph_errors": "关系错误",
     "weight_errors": "重量差异",
     "child": "子单号",
-    "classes": "危险类组合"
+    "classes": "危险类组合",
+    "root_id": "主单号",
+    "declared_gross_kg": "申报毛重 kg",
+    "declared_net_kg": "申报净重 kg",
+    "verified_gross_kg": "可核验毛重 kg",
+    "verified_net_kg": "可核验净重 kg",
+    "difference_kg": "毛重差异 kg",
+    "billing_basis": "计费基准",
+    "billing_basis_note": "基准裁决",
+    "billing_weight_kg": "计费重量 kg",
+    "settlement": "结算结论",
+    "block_count": "阻断数",
+    "blocks": "阻断凭据",
+    "status": "凭证状态",
+    "sealable": "可否封存",
+    "voucher_version": "凭证版次",
+    "basis_contract": "合同基准",
+    "blocked_roots": "阻断主单",
+    "declaration_open": "申报对账未闭合",
+    "corrections": "补正台账",
+    "ledger": "版本台账",
+    "source_values": "原申报依据",
+    "request_id": "请求批次号",
+    "applied_corrections": "采用补正",
+    "previous_version": "上一版次",
+    "new_version": "新版次",
+    "affected_roots": "受影响主单",
+    "rollback": "回滚标记"
   }
 }

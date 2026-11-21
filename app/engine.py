@@ -6,7 +6,7 @@ from app.config import ROOT, MODULES, MAX_BYTES
 from app.errors import BusinessError
 from app.manifest import digest, make_manifest
 
-def evaluate(payload=None, until=7, snapshot=None):
+def evaluate(payload=None, until=8, snapshot=None):
     payload=payload or {}
     dataset=payload.get('dataset','dirty')
     if dataset not in {'dirty','clean','legacy'}: raise BusinessError('BAD_DATASET','样例名称无效')
@@ -15,8 +15,12 @@ def evaluate(payload=None, until=7, snapshot=None):
     if len(raw)>MAX_BYTES: raise BusinessError('TOO_LARGE','文件超过2MB',413)
     context=deepcopy(snapshot['context']) if snapshot is not None else json.loads((ROOT/'sample_data/context.json').read_text())
     context.update(deepcopy(payload.get('overrides',{})))
+    if payload.get('billing_basis') is not None:
+        context['billing_basis']=payload['billing_basis']
     start=time.perf_counter()
     state={'raw_bytes':raw,'context':context,'records':[],'quarantine':[], 'counts':{},'views':{},'source':dataset}
+    state['billing_overrides']={'billing_basis':payload.get('billing_basis'),
+                                'corrections':deepcopy(payload.get('corrections',[]))}
     for index,key in enumerate(MODULES,1):
         if index>until: break
         import_module(f'app.modules.{key}.rules').apply(state)

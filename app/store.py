@@ -34,3 +34,13 @@ def review(path,run_id,revision):
                 raise BusinessError('NOT_FOUND','批次不存在',404)
             raise BusinessError('STALE_VERSION','复核版本已更新，请刷新',409)
     return get(path,run_id)
+
+def replace_result(path, run_id, result):
+    """补正重算后就地持久化新状态；同 run_id 保留唯一批次与复核修订。"""
+    with connect(path) as con:
+        row=con.execute('SELECT revision,status FROM runs WHERE id=?',(run_id,)).fetchone()
+        if not row:
+            raise BusinessError('NOT_FOUND','批次不存在',404)
+        con.execute('UPDATE runs SET result=? WHERE id=?',
+                    (json.dumps(result,ensure_ascii=False),run_id))
+    return get(path,run_id)
